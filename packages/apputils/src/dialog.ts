@@ -582,6 +582,15 @@ export namespace Dialog {
   }
 
   /**
+   * Close all dialog instances.
+   */
+  export function close(): void {
+    tracker.forEach(dialog => {
+      dialog.close();
+    });
+  }
+
+  /**
    * Disposes all dialog instances.
    *
    * #### Notes
