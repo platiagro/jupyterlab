@@ -163,6 +163,11 @@ export namespace Contents {
      * The file type.
      */
     type?: ContentType;
+
+    /**
+     * The file template.
+     */
+    template?: string;
   }
 
   /**

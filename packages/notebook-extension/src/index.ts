@@ -228,6 +228,8 @@ namespace CommandIDs {
   export const disableOutputScrolling = 'notebook:disable-output-scrolling';
 
   export const selectLastRunCell = 'notebook:select-last-run-cell';
+
+  export const createNewWithTemplate = 'notebook:create-new-with-template';
 }
 
 /**
@@ -658,9 +660,13 @@ function activateNotebookHandler(
   }
 
   // Utility function to create a new notebook.
-  const createNew = (cwd: string, kernelName?: string) => {
+  const createNew = (cwd: string, kernelName?: string, template?: string) => {
     return commands
-      .execute('docmanager:new-untitled', { path: cwd, type: 'notebook' })
+      .execute('docmanager:new-untitled', {
+        path: cwd,
+        type: 'notebook',
+        template
+      })
       .then(model => {
         return commands.execute('docmanager:open', {
           path: model.path,
@@ -693,6 +699,21 @@ function activateNotebookHandler(
         (browserFactory ? browserFactory.defaultBrowser.model.path : '');
       const kernelName = (args['kernelName'] as string) || '';
       return createNew(cwd, kernelName);
+    }
+  });
+
+  // Add a command for creating a new notebook with template.
+  commands.addCommand(CommandIDs.createNewWithTemplate, {
+    label: args => (args['label'] as string) || '',
+    caption: args => (args['caption'] as string) || '',
+    icon: notebookIcon,
+    execute: args => {
+      const cwd =
+        (args['cwd'] as string) ||
+        (browserFactory ? browserFactory.defaultBrowser.model.path : '');
+      const kernelName = (args['kernelName'] as string) || '';
+      const templateName = (args['templateName'] as string) || '';
+      return createNew(cwd, kernelName, templateName);
     }
   });
 

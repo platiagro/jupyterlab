@@ -38,7 +38,7 @@ const LAUNCHER_CLASS = 'jp-Launcher';
 /**
  * The known categories of launcher items and their default ordering.
  */
-const KNOWN_CATEGORIES = ['Notebook', 'Console', 'Other'];
+const KNOWN_CATEGORIES = ['Notebook', 'Notebook Template', 'Console', 'Other'];
 
 /**
  * These launcher item categories are known to have kernels, so the kernel icons
@@ -105,7 +105,36 @@ export class LauncherModel extends VDomModel implements ILauncher {
     return new ArrayIterator(this._items);
   }
 
-  private _items: ILauncher.IItemOptions[] = [];
+  private _items: ILauncher.IItemOptions[] = [
+    {
+      command: 'notebook:create-new-with-template',
+      args: {
+        label: 'Implantation',
+        caption: 'Create a new notebook with implantation template',
+        kernelName: 'python3',
+        templateName: 'implantation'
+      },
+      category: 'Notebook Template',
+      rank: 1,
+      metadata: {
+        kernel: {}
+      }
+    },
+    {
+      command: 'notebook:create-new-with-template',
+      args: {
+        label: 'Training',
+        caption: 'Create a new notebook with training template',
+        kernelName: 'python3',
+        templateName: 'training'
+      },
+      category: 'Notebook Template',
+      rank: 2,
+      metadata: {
+        kernel: {}
+      }
+    }
+  ];
 }
 
 /**
