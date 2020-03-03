@@ -18,7 +18,9 @@ import {
 import { DocumentRegistry } from '@jupyterlab/docregistry';
 import * as nbformat from '@jupyterlab/nbformat';
 import {
+  Button,
   addIcon,
+  bugIcon,
   copyIcon,
   cutIcon,
   HTMLSelect,
@@ -167,6 +169,61 @@ export namespace ToolbarItems {
   }
 
   /**
+   * Create an insert code toolbar item.
+   */
+  export function createCodeButton(panel: NotebookPanel): Widget {
+    function onClickLoadDataset() {
+      NotebookActions.insertMinioCode(panel.content, 1);
+      Dialog.close();
+    }
+
+    function onClickSaveDataset() {
+      NotebookActions.insertMinioCode(panel.content, 2);
+      Dialog.close();
+    }
+
+    function onClickLoadModel() {
+      NotebookActions.insertMinioCode(panel.content, 3);
+      Dialog.close();
+    }
+
+    function onClickSaveModel() {
+      NotebookActions.insertMinioCode(panel.content, 4);
+      Dialog.close();
+    }
+
+    let body = (
+      <div>
+        <h4>Minio Group</h4>
+        <Button fill onClick={onClickLoadDataset}>
+          Load dataset
+        </Button>
+        <Button fill onClick={onClickSaveDataset}>
+          Save dataset
+        </Button>
+        <Button fill onClick={onClickLoadModel}>
+          Load model
+        </Button>
+        <Button fill onClick={onClickSaveModel}>
+          Save model
+        </Button>
+      </div>
+    );
+
+    return new ToolbarButton({
+      icon: bugIcon,
+      onClick: () => {
+        showDialog({
+          title: 'Code palette',
+          body,
+          buttons: [Dialog.cancelButton()]
+        });
+      },
+      tooltip: 'Open code palette'
+    });
+  }
+
+  /**
    * Get the default toolbar items for panel
    */
   export function getDefaultItems(
@@ -192,6 +249,7 @@ export namespace ToolbarItems {
         )
       },
       { name: 'cellType', widget: createCellTypeItem(panel) },
+      { name: 'code', widget: createCodeButton(panel) },
       { name: 'spacer', widget: Toolbar.createSpacerItem() },
       {
         name: 'kernelName',

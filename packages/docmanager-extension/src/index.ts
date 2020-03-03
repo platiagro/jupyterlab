@@ -427,7 +427,8 @@ function addCommands(
         typeof args['path'] === 'undefined' ? '' : (args['path'] as string);
       let options: Partial<Contents.ICreateOptions> = {
         type: args['type'] as Contents.ContentType,
-        path
+        path,
+        template: args['template'] as string
       };
 
       if (args['type'] === 'file') {

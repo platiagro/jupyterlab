@@ -1380,6 +1380,68 @@ export namespace NotebookActions {
       }
     });
   }
+
+  /**
+   * Insert a minio code below the active cell.
+   *
+   * @param notebook - The target notebook widget.
+   * @param code - The target code to add.
+   */
+  export function insertMinioCode(notebook: Notebook, code: number): void {
+    if (!notebook.model || !notebook.activeCell) {
+      return;
+    }
+
+    const state = Private.getState(notebook);
+    const model = notebook.model;
+
+    let markdownCellText = '';
+    let codeCellText = [];
+    switch (code) {
+      case 1:
+        markdownCellText = 'Load dataset';
+        codeCellText.push('from platiagro import load_dataset');
+        codeCellText.push('');
+        codeCellText.push('df = load_dataset(name=dataset)');
+        break;
+      case 2:
+        markdownCellText = 'Save dataset';
+        codeCellText.push('from platiagro import save_dataset');
+        codeCellText.push('');
+        codeCellText.push('df = pd.DataFrame({"col0": []})');
+        codeCellText.push('metadata = {}');
+        codeCellText.push(
+          'save_dataset(name=dataset, df=df, metadata=metadata)'
+        );
+        break;
+      case 3:
+        markdownCellText = 'Load model';
+        codeCellText.push('from platiagro import load_model');
+        codeCellText.push('');
+        codeCellText.push('model = load_model(name=experiment_id)');
+        break;
+      default:
+        markdownCellText = 'Save model';
+        codeCellText.push('from platiagro import save_model');
+        codeCellText.push('');
+        codeCellText.push('save_model(name=experiment_id, model=model)');
+        break;
+    }
+
+    const markdownCell = model.contentFactory.createMarkdownCell({});
+    markdownCell.value.text = markdownCellText;
+    model.cells.insert(notebook.activeCellIndex + 1, markdownCell);
+    notebook.activeCellIndex++;
+
+    const codeCell = model.contentFactory.createCodeCell({});
+    codeCell.value.text = codeCellText.join('\n');
+    model.cells.insert(notebook.activeCellIndex + 1, codeCell);
+    notebook.activeCellIndex++;
+
+    // Make the newly inserted cell active.
+    notebook.deselectAll();
+    Private.handleState(notebook, state, true);
+  }
 }
 
 /**
