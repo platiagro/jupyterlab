@@ -19,11 +19,12 @@ import { DocumentRegistry } from '@jupyterlab/docregistry';
 import * as nbformat from '@jupyterlab/nbformat';
 import {
   Button,
+  HTMLSelect,
   addIcon,
   bugIcon,
+  keyboardIcon,
   copyIcon,
   cutIcon,
-  HTMLSelect,
   pasteIcon,
   runIcon,
   saveIcon
@@ -224,6 +225,93 @@ export namespace ToolbarItems {
   }
 
   /**
+   * Create an insert new parameter toolbar item.
+   */
+  export function createNewParameterButton(panel: NotebookPanel): Widget {
+    const newParam = { name: '', value: '', type: '' };
+
+    function showParamDialog() {
+      let body = (
+        <div>
+          <div>
+            <label>Name:</label>
+            <br />
+            <input
+              defaultValue={newParam.name}
+              onChange={e => {
+                newParam.name = e.target.value.trim();
+              }}
+            />
+          </div>
+          <br />
+          <div>
+            <label>Default value:</label>
+            <br />
+            <input
+              defaultValue={newParam.value}
+              onChange={e => {
+                newParam.value = e.target.value.trim();
+              }}
+            />
+          </div>
+          <br />
+          <div>
+            <label>Type:</label>
+            <select
+              defaultValue={newParam.type}
+              onChange={e => {
+                newParam.type = e.target.value;
+              }}
+            >
+              <option value=""></option>
+              <option value="integer">Integer</option>
+              <option value="number">Number</option>
+              <option value="string">String</option>
+            </select>
+          </div>
+        </div>
+      );
+      showDialog({
+        title: 'New parameter',
+        body,
+        buttons: [Dialog.cancelButton(), Dialog.okButton({ label: 'Create' })]
+      }).then(result => {
+        if (result.button.accept) {
+          if (!newParam.name || !newParam.value || !newParam.type) {
+            showDialog({
+              title: 'Cannot create new parameter',
+              body: 'Values missing',
+              buttons: [Dialog.okButton()]
+            }).then(result => {
+              showParamDialog();
+            });
+          } else {
+            const sValue =
+              newParam.type == 'string'
+                ? '"' + newParam.value + '"'
+                : newParam.value;
+            const sType = ' #@param {type:"' + newParam.type + '"}';
+            const sParam = newParam.name + ' = ' + sValue + sType;
+            NotebookActions.insertNewParam(panel.content, sParam);
+          }
+        }
+      });
+    }
+
+    return new ToolbarButton({
+      icon: keyboardIcon,
+      tooltip: 'Open new parameter',
+      onClick: () => {
+        // reset the values
+        newParam.name = '';
+        newParam.value = '';
+        newParam.type = '';
+        showParamDialog();
+      }
+    });
+  }
+
+  /**
    * Get the default toolbar items for panel
    */
   export function getDefaultItems(
@@ -250,6 +338,7 @@ export namespace ToolbarItems {
       },
       { name: 'cellType', widget: createCellTypeItem(panel) },
       { name: 'code', widget: createCodeButton(panel) },
+      { name: 'newParameter', widget: createNewParameterButton(panel) },
       { name: 'spacer', widget: Toolbar.createSpacerItem() },
       {
         name: 'kernelName',
