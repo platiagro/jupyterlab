@@ -1442,6 +1442,68 @@ export namespace NotebookActions {
     notebook.deselectAll();
     Private.handleState(notebook, state, true);
   }
+
+  /**
+   * Insert a new param code in active cell.
+   *
+   * @param notebook - The target notebook widget.
+   * @param param - The paramter to add.
+   */
+  export function insertNewParam(notebook: Notebook, param: string): void {
+    if (!notebook.model || !notebook.activeCell) {
+      return;
+    }
+
+    const state = Private.getState(notebook);
+    const model = notebook.model;
+
+    // get data from cell
+    let data = notebook.widgets
+      .filter(cell => notebook.isSelectedOrActive(cell))
+      .map(cell => cell.model.toJSON())
+      .map(cellJSON => {
+        if ((cellJSON.metadata as JSONObject).deletable !== undefined) {
+          delete (cellJSON.metadata as JSONObject).deletable;
+        }
+        return cellJSON;
+      });
+
+    // add the parameter to the cell source
+    let newSource = data[0].source;
+    if (newSource) {
+      newSource += '\n' + param;
+    } else {
+      newSource = param;
+    }
+    data[0].source = newSource;
+
+    // create a new cell from the edited data
+    const newCell = data.map(cell => {
+      switch (cell.cell_type) {
+        case 'code':
+          return model.contentFactory.createCodeCell({ cell });
+        case 'markdown':
+          return model.contentFactory.createMarkdownCell({ cell });
+        default:
+          return model.contentFactory.createRawCell({ cell });
+      }
+    });
+
+    // store the index
+    const index = notebook.activeCellIndex;
+
+    // remove the cell without changes
+    model.cells.remove(index);
+
+    // add the cell with changes
+    newCell.forEach(cell => {
+      model.cells.insert(index, cell);
+    });
+
+    notebook.activeCellIndex = index;
+    notebook.deselectAll();
+    Private.handleState(notebook, state);
+  }
 }
 
 /**
