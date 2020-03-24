@@ -195,7 +195,7 @@ export namespace ToolbarItems {
 
     let body = (
       <div>
-        <h4>Minio Group</h4>
+        <h4>PlatIAgro SDK</h4>
         <Button fill onClick={onClickLoadDataset}>
           Load dataset
         </Button>

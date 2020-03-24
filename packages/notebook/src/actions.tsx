@@ -1399,13 +1399,13 @@ export namespace NotebookActions {
     let codeCellText = [];
     switch (code) {
       case 1:
-        markdownCellText = 'Load dataset';
+        markdownCellText = '## Load dataset';
         codeCellText.push('from platiagro import load_dataset');
         codeCellText.push('');
         codeCellText.push('df = load_dataset(name=dataset)');
         break;
       case 2:
-        markdownCellText = 'Save dataset';
+        markdownCellText = '## Save dataset';
         codeCellText.push('from platiagro import save_dataset');
         codeCellText.push('');
         codeCellText.push('df = pd.DataFrame({"col0": []})');
@@ -1415,16 +1415,19 @@ export namespace NotebookActions {
         );
         break;
       case 3:
-        markdownCellText = 'Load model';
+        markdownCellText = '## Load model';
         codeCellText.push('from platiagro import load_model');
         codeCellText.push('');
-        codeCellText.push('model = load_model(name=experiment_id)');
+        codeCellText.push('model = load_model(experiment_id=experiment_id)');
         break;
       default:
-        markdownCellText = 'Save model';
+        markdownCellText = '## Save model';
         codeCellText.push('from platiagro import save_model');
         codeCellText.push('');
-        codeCellText.push('save_model(name=experiment_id, model=model)');
+        codeCellText.push('metadata = {}');
+        codeCellText.push(
+          'save_model(experiment_id=experiment_id, model=model, metadata=metadata)'
+        );
         break;
     }
 
