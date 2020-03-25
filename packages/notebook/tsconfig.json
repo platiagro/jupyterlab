@@ -38,6 +38,12 @@
     },
     {
       "path": "../ui-components"
+    },
+    {
+      "path": "../docmanager"
+    },
+    {
+      "path": "../filebrowser"
     }
   ]
 }

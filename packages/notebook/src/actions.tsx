@@ -1395,17 +1395,25 @@ export namespace NotebookActions {
     const state = Private.getState(notebook);
     const model = notebook.model;
 
-    let markdownCellText = '';
+    let markdownCellText = [];
     let codeCellText = [];
     switch (code) {
       case 1:
-        markdownCellText = '## Load dataset';
+        markdownCellText.push('## Load dataset');
+        markdownCellText.push('');
+        markdownCellText.push(
+          'Impot and put the whole dataset in a pandas.DataFrame.'
+        );
         codeCellText.push('from platiagro import load_dataset');
         codeCellText.push('');
         codeCellText.push('df = load_dataset(name=dataset)');
         break;
       case 2:
-        markdownCellText = '## Save dataset';
+        markdownCellText.push('## Save dataset');
+        markdownCellText.push('');
+        markdownCellText.push(
+          'Stores the transformed dataset in a object storage.'
+        );
         codeCellText.push('from platiagro import save_dataset');
         codeCellText.push('');
         codeCellText.push('df = pd.DataFrame({"col0": []})');
@@ -1415,13 +1423,20 @@ export namespace NotebookActions {
         );
         break;
       case 3:
-        markdownCellText = '## Load model';
+        markdownCellText.push('## Load model');
         codeCellText.push('from platiagro import load_model');
         codeCellText.push('');
         codeCellText.push('model = load_model(experiment_id=experiment_id)');
         break;
       default:
-        markdownCellText = '## Save model';
+        markdownCellText.push('## Save model');
+        markdownCellText.push('');
+        markdownCellText.push(
+          'Stores the modal artifacts in a object storage.'
+        );
+        markdownCellText.push(
+          'It will make the modal available for future deployments.'
+        );
         codeCellText.push('from platiagro import save_model');
         codeCellText.push('');
         codeCellText.push('metadata = {}');
@@ -1432,7 +1447,7 @@ export namespace NotebookActions {
     }
 
     const markdownCell = model.contentFactory.createMarkdownCell({});
-    markdownCell.value.text = markdownCellText;
+    markdownCell.value.text = markdownCellText.join('\n');
     model.cells.insert(notebook.activeCellIndex + 1, markdownCell);
     notebook.activeCellIndex++;
 
@@ -1442,6 +1457,79 @@ export namespace NotebookActions {
     notebook.activeCellIndex++;
 
     // Make the newly inserted cell active.
+    notebook.deselectAll();
+    Private.handleState(notebook, state, true);
+  }
+
+  /**
+   * Set a dataset parameter or add a new one.
+   *
+   * @param notebook - The target notebook widget.
+   * @param param - Formated parameter.
+   */
+  export function setDatasetParam(notebook: Notebook, param: string): void {
+    if (!notebook.model || !notebook.activeCell) {
+      return;
+    }
+
+    // verify if exist dataset param
+    let found = false;
+    let datasetIndex = -1;
+    for (let i = 0; i < notebook.widgets.length; i++) {
+      const cell = notebook.widgets[i];
+      const cellJSON = cell.model.toJSON();
+      if (cellJSON.cell_type == 'code') {
+        let source = cellJSON.source.toString();
+        if (source.match('^dataset = ')) {
+          found = true;
+          datasetIndex = i;
+          break;
+        }
+      }
+    }
+
+    // add the dataset param on the active cell
+    if (datasetIndex == -1) {
+      datasetIndex = notebook.activeCellIndex;
+    }
+
+    // add the parameter to the cell source
+    const state = Private.getState(notebook);
+    const model = notebook.model;
+    let cell = model.cells.get(datasetIndex).toJSON();
+    let newSource = cell.source;
+    let isToDelete = true;
+    if (found) {
+      let parts = newSource.toString().split('\n');
+      for (let i = 0; i < parts.length; i++) {
+        if (parts[i].match('^dataset = ')) {
+          parts[i] = param;
+        }
+      }
+      cell.source = parts.join('\n');
+    } else {
+      if (cell.cell_type == 'code') {
+        if (newSource) {
+          newSource += '\n' + param;
+        } else {
+          newSource = param;
+        }
+        cell.source = newSource;
+      } else {
+        isToDelete = false;
+        cell.source = param;
+        datasetIndex++;
+      }
+    }
+
+    const newCell = model.contentFactory.createCodeCell({ cell });
+    if (isToDelete) {
+      model.cells.remove(datasetIndex);
+    }
+    model.cells.insert(datasetIndex, newCell);
+
+    // Make the newly inserted cell active.
+    notebook.activeCellIndex = datasetIndex;
     notebook.deselectAll();
     Private.handleState(notebook, state, true);
   }
