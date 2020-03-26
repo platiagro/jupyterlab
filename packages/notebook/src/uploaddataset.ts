@@ -9,7 +9,7 @@ import { fileUploadIcon } from '@jupyterlab/ui-components';
 import { NotebookActions } from './actions';
 import { Notebook } from './widget';
 
-export const URL = 'http://datasets:8080';
+export const URL = '/datasets/apis';
 export const datasetsApi = axios.create({
   baseURL: URL
 });
@@ -52,9 +52,11 @@ export class UploaderDataset extends ToolbarButton {
     let files = Array.prototype.slice.call(this._input.files) as File[];
     let file = files[0];
     const response = await this.uploadDataset(file);
-    const value = response?.data.name;
-    const param = `dataset = "${value}" #@param {type:"string"}`;
-    NotebookActions.setDatasetParam(this.notebook, param);
+    if (response) {
+      const value = response?.data.name;
+      const param = `dataset = "${value}" #@param {type:"string"}`;
+      NotebookActions.setDatasetParam(this.notebook, param);
+    }
   };
 
   /**

@@ -19,7 +19,13 @@
       "path": "../coreutils"
     },
     {
+      "path": "../docmanager"
+    },
+    {
       "path": "../docregistry"
+    },
+    {
+      "path": "../filebrowser"
     },
     {
       "path": "../nbformat"
@@ -38,12 +44,6 @@
     },
     {
       "path": "../ui-components"
-    },
-    {
-      "path": "../docmanager"
-    },
-    {
-      "path": "../filebrowser"
     }
   ]
 }
