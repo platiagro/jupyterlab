@@ -4,6 +4,7 @@
 import { Widget } from '@lumino/widgets';
 import * as React from 'react';
 
+import * as nbformat from '@jupyterlab/nbformat';
 import {
   showDialog,
   Dialog,
@@ -15,8 +16,10 @@ import {
   ToolbarButton,
   ISessionContextDialogs
 } from '@jupyterlab/apputils';
+import { DocumentManager } from '@jupyterlab/docmanager';
 import { DocumentRegistry } from '@jupyterlab/docregistry';
-import * as nbformat from '@jupyterlab/nbformat';
+import { FileBrowserModel, FileBrowser } from '@jupyterlab/filebrowser';
+import { ServiceManager } from '@jupyterlab/services';
 import {
   Button,
   HTMLSelect,
@@ -33,6 +36,7 @@ import {
 import { NotebookActions } from './actions';
 import { NotebookPanel } from './panel';
 import { Notebook } from './widget';
+import { UploaderDataset } from './uploaddataset';
 
 /**
  * The class name added to toolbar cell type dropdown wrapper.
@@ -167,6 +171,28 @@ export namespace ToolbarItems {
    */
   export function createCellTypeItem(panel: NotebookPanel): Widget {
     return new CellTypeSwitcher(panel.content);
+  }
+
+  /**
+   * Create a upload dataset toolbar item.
+   */
+  export function createUploadButton(panel: NotebookPanel): Widget {
+    let manager = new ServiceManager();
+    let docRegistry = new DocumentRegistry();
+    let docManager = new DocumentManager({
+      registry: docRegistry,
+      manager,
+      opener
+    });
+    let fbModel = new FileBrowserModel({
+      manager: docManager
+    });
+    let fbWidget = new FileBrowser({
+      id: 'filebrowser',
+      model: fbModel
+    });
+    const uploader = new UploaderDataset(panel.content, fbWidget);
+    return uploader;
   }
 
   /**
@@ -337,6 +363,7 @@ export namespace ToolbarItems {
         )
       },
       { name: 'cellType', widget: createCellTypeItem(panel) },
+      { name: 'upload', widget: createUploadButton(panel) },
       { name: 'code', widget: createCodeButton(panel) },
       { name: 'newParameter', widget: createNewParameterButton(panel) },
       { name: 'spacer', widget: Toolbar.createSpacerItem() },
