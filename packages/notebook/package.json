@@ -58,6 +58,7 @@
     "@lumino/virtualdom": "^1.6.1",
     "@lumino/widgets": "^1.11.1",
     "axios": "^0.19.0",
+    "universal-cookie": "^4.0.2",
     "react": "~16.9.0"
   },
   "devDependencies": {

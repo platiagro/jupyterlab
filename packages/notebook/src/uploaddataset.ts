@@ -1,17 +1,19 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 import axios from 'axios';
+import Cookies from 'universal-cookie';
 
 import { ToolbarButton, showErrorMessage } from '@jupyterlab/apputils';
 import { FileBrowserModel } from '@jupyterlab/filebrowser';
 import { fileUploadIcon } from '@jupyterlab/ui-components';
+import { ServerConnection } from '@jupyterlab/services';
 
 import { NotebookActions } from './actions';
 import { Notebook } from './widget';
 
-export const URL = '/datasets/apis';
-export const datasetsApi = axios.create({
-  baseURL: URL
+const serverSettings = ServerConnection.makeSettings();
+const datasetsApi = axios.create({
+  baseURL: serverSettings.baseUrl
 });
 
 /**
@@ -64,11 +66,15 @@ export class UploaderDataset extends ToolbarButton {
    */
   private uploadDataset = async (file: File) => {
     try {
+      const cookies = new Cookies();
+      cookies.set('_xsrf', 'token', { path: '/' });
+
       var formData = new FormData();
       formData.append('file', file);
-      const response = await datasetsApi.post(`/datasets`, formData, {
+      const response = await datasetsApi.post(`api/platia`, formData, {
         headers: {
-          'Content-Type': 'multipart/form-data'
+          'Content-Type': 'multipart/form-data',
+          'X-XSRFToken': 'token'
         }
       });
       return response;
