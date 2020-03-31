@@ -1402,7 +1402,7 @@ export namespace NotebookActions {
         markdownCellText.push('## Load dataset');
         markdownCellText.push('');
         markdownCellText.push(
-          'Impot and put the whole dataset in a pandas.DataFrame.'
+          'Import and put the whole dataset in a pandas.DataFrame.'
         );
         codeCellText.push('from platiagro import load_dataset');
         codeCellText.push('');
