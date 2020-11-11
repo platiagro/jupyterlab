@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "@jupyterlab/coreutils": "^4.1.0",
-    "@jupyterlab/services": "^5.1.0",
+    "@jupyterlab/services": "https://github.com/platiagro/jupyterlab/releases/download/v0.2.0platiagro-v2.1.2/jupyterlab-services-5.1.0.tgz",
     "@jupyterlab/settingregistry": "^2.1.0",
     "@jupyterlab/statedb": "^2.1.0",
     "@jupyterlab/ui-components": "^2.1.1",
