@@ -163,7 +163,7 @@ export interface ISessionConnection extends IObservableDisposable {
    */
   changeKernel(
     options: Partial<Kernel.IModel>,
-    serverSettings?: IRemoteSettings
+    serverSettings: Partial<IRemoteSettings>
   ): Promise<Kernel.IKernelConnection | null>;
 
   /**
@@ -388,17 +388,17 @@ export interface IRemoteSettings {
   /**
    * The unique identifier for the remote kernel.
    */
-  id: string;
+  readonly id: string;
 
   /**
    * The base ws url of the server.
    */
-  wsUrl: string;
+  readonly wsUrl: string;
 
   /**
    * The authentication token for requests.  Use an empty string to disable.
    */
-  token: string;
+  readonly token: string;
 }
 
 /**

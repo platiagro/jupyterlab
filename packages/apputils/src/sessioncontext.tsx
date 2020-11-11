@@ -196,7 +196,7 @@ export interface ISessionContext extends IObservableDisposable {
    */
   changeKernel(
     options?: Partial<Kernel.IModel>,
-    serverSettings?: Session.IRemoteSettings
+    remoteSettings?: Partial<Session.IRemoteSettings>
   ): Promise<Kernel.IKernelConnection | null>;
 }
 
@@ -542,13 +542,13 @@ export class SessionContext implements ISessionContext {
    */
   async changeKernel(
     options: Partial<Kernel.IModel> = {},
-    serverSettings?: Session.IRemoteSettings
+    remoteSettings: Partial<Session.IRemoteSettings> = {}
   ): Promise<Kernel.IKernelConnection | null> {
     await this.initialize();
     if (this.isDisposed) {
       throw new Error('Disposed');
     }
-    return this._changeKernel(options, serverSettings);
+    return this._changeKernel(options, remoteSettings);
   }
 
   /**
@@ -650,7 +650,7 @@ export class SessionContext implements ISessionContext {
    */
   private async _changeKernel(
     options: Partial<Kernel.IModel> = {},
-    serverSettings?: Session.IRemoteSettings
+    remoteSettings: Partial<Session.IRemoteSettings> = {}
   ): Promise<Kernel.IKernelConnection | null> {
     if (this.isDisposed) {
       throw new Error('Disposed');
@@ -658,7 +658,7 @@ export class SessionContext implements ISessionContext {
     let session = this._session;
     if (session && session.kernel?.status !== 'dead') {
       try {
-        return session.changeKernel(options, serverSettings);
+        return session.changeKernel(options, remoteSettings);
       } catch (err) {
         void this._handleSessionError(err);
         throw err;
