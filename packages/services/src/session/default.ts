@@ -7,6 +7,8 @@ import { Kernel, KernelMessage } from '../kernel';
 
 import { ServerConnection } from '..';
 
+import { KernelConnection } from '../kernel/default';
+
 import * as Session from './session';
 
 import { shutdownSession, updateSession } from './restapi';
@@ -32,8 +34,6 @@ export class SessionConnection implements Session.ISessionConnection {
     this._type = options.model.type;
     this._username = options.username ?? '';
     this._clientId = options.clientId ?? UUID.uuid4();
-    this._connectToKernel = options.connectToKernel;
-    this._kernelConnectionOptions = options.kernelConnectionOptions ?? {};
     this.serverSettings =
       options.serverSettings ?? ServerConnection.makeSettings();
     this.setupKernel(options.model.kernel);
@@ -267,12 +267,14 @@ export class SessionConnection implements Session.ISessionConnection {
    * keeping the existing session ID and session path.
    */
   async changeKernel(
-    options: Partial<Kernel.IModel>
+    options: Partial<Kernel.IModel>,
+    remoteSettings: Partial<Session.IRemoteSettings> = {}
   ): Promise<Kernel.IKernelConnection | null> {
     if (this.isDisposed) {
       throw new Error('Session is disposed');
     }
 
+    this._remoteSettings = remoteSettings;
     await this._patch({ kernel: options });
     return this.kernel;
   }
@@ -305,13 +307,17 @@ export class SessionConnection implements Session.ISessionConnection {
       this._kernel = null;
       return;
     }
-    const kc = this._connectToKernel({
-      ...this._kernelConnectionOptions,
-      model,
-      username: this._username,
-      clientId: this._clientId,
-      serverSettings: this.serverSettings
-    });
+
+    const kc = new KernelConnection(
+      {
+        model,
+        username: this._username,
+        clientId: this._clientId,
+        serverSettings: this.serverSettings
+      },
+      this._remoteSettings
+    );
+
     this._kernel = kc;
     kc.statusChanged.connect(this.onKernelStatus, this);
     kc.connectionStatusChanged.connect(this.onKernelConnectionStatus, this);
@@ -420,11 +426,5 @@ export class SessionConnection implements Session.ISessionConnection {
   private _unhandledMessage = new Signal<this, KernelMessage.IMessage>(this);
   private _anyMessage = new Signal<this, Kernel.IAnyMessageArgs>(this);
   private _propertyChanged = new Signal<this, 'path' | 'name' | 'type'>(this);
-  private _connectToKernel: (
-    options: Kernel.IKernelConnection.IOptions
-  ) => Kernel.IKernelConnection;
-  private _kernelConnectionOptions: Omit<
-    Kernel.IKernelConnection.IOptions,
-    'model' | 'username' | 'clientId' | 'serverSettings'
-  >;
+  private _remoteSettings: Partial<Session.IRemoteSettings>;
 }

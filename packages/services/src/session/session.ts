@@ -150,6 +150,7 @@ export interface ISessionConnection extends IObservableDisposable {
    * Change the kernel.
    *
    * @param options - The name or id of the new kernel.
+   * @param serverSettings - The settings used to connect to a remote Kernel.
    *
    * @returns A promise that resolves with the new kernel model.
    *
@@ -161,7 +162,8 @@ export interface ISessionConnection extends IObservableDisposable {
    * To start now kernel, pass an empty dictionary.
    */
   changeKernel(
-    options: Partial<Kernel.IModel>
+    options: Partial<Kernel.IModel>,
+    serverSettings: Partial<IRemoteSettings>
   ): Promise<Kernel.IKernelConnection | null>;
 
   /**
@@ -374,6 +376,29 @@ export interface IModel {
   readonly path: string;
   readonly type: string;
   readonly kernel: Kernel.IModel | null;
+}
+
+/**
+ * The settings used to connect to a remote Kernel.
+ *
+ * #### Notes
+ * See the [PlatIAgro Tutorial](https://platiagro.github.io/tutorials/).
+ */
+export interface IRemoteSettings {
+  /**
+   * The unique identifier for the remote kernel.
+   */
+  readonly id: string;
+
+  /**
+   * The base ws url of the server.
+   */
+  readonly wsUrl: string;
+
+  /**
+   * The authentication token for requests.  Use an empty string to disable.
+   */
+  readonly token: string;
 }
 
 /**

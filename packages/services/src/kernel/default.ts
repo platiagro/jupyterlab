@@ -27,6 +27,7 @@ import * as validate from './validate';
 import { KernelSpec, KernelSpecAPI } from '../kernelspec';
 
 import * as restapi from './restapi';
+import { Session } from '../session';
 
 // Stub for requirejs.
 declare var requirejs: any;
@@ -43,13 +44,17 @@ export class KernelConnection implements Kernel.IKernelConnection {
   /**
    * Construct a kernel object.
    */
-  constructor(options: Kernel.IKernelConnection.IOptions) {
+  constructor(
+    options: Kernel.IKernelConnection.IOptions,
+    remoteSettings: Partial<Session.IRemoteSettings> = {}
+  ) {
     this._name = options.model.name;
     this._id = options.model.id;
     this.serverSettings =
       options.serverSettings ?? ServerConnection.makeSettings();
     this._clientId = options.clientId ?? UUID.uuid4();
     this._username = options.username ?? '';
+    this._remoteSettings = remoteSettings;
     this.handleComms = options.handleComms ?? true;
 
     this._createSocket();
@@ -1185,9 +1190,9 @@ export class KernelConnection implements Kernel.IKernelConnection {
 
     let settings = this.serverSettings;
     let partialUrl = URLExt.join(
-      settings.wsUrl,
+      this._remoteSettings.wsUrl ?? settings.wsUrl,
       restapi.KERNEL_SERVICE_URL,
-      encodeURIComponent(this._id)
+      this._remoteSettings.id ?? encodeURIComponent(this._id)
     );
 
     // Strip any authentication from the display string.
@@ -1196,10 +1201,11 @@ export class KernelConnection implements Kernel.IKernelConnection {
 
     let url = URLExt.join(
       partialUrl,
-      'channels?session_id=' + encodeURIComponent(this._clientId)
+      'channels?session_id=' + this._remoteSettings.token ??
+        encodeURIComponent(this._clientId)
     );
     // If token authentication is in use.
-    let token = settings.token;
+    let token = this._remoteSettings.token ?? settings.token;
     if (token !== '') {
       url = url + `&token=${encodeURIComponent(token)}`;
     }
@@ -1438,6 +1444,7 @@ export class KernelConnection implements Kernel.IKernelConnection {
 
   private _id = '';
   private _name = '';
+  private _remoteSettings: Partial<Session.IRemoteSettings>;
   private _status: KernelMessage.Status = 'unknown';
   private _connectionStatus: Kernel.ConnectionStatus = 'connecting';
   private _kernelSession = '';
