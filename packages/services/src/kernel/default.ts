@@ -1201,8 +1201,7 @@ export class KernelConnection implements Kernel.IKernelConnection {
 
     let url = URLExt.join(
       partialUrl,
-      'channels?session_id=' + this._remoteSettings.token ??
-        encodeURIComponent(this._clientId)
+      'channels?session_id=' + encodeURIComponent(this._clientId)
     );
     // If token authentication is in use.
     let token = this._remoteSettings.token ?? settings.token;
