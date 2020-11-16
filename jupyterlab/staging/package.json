@@ -236,7 +236,6 @@
     "outputDir": "..",
     "singletonPackages": [
       "@jupyterlab/application",
-      "@jupyterlab/apputils",
       "@jupyterlab/console",
       "@jupyterlab/coreutils",
       "@jupyterlab/docmanager",
@@ -248,7 +247,6 @@
       "@jupyterlab/notebook",
       "@jupyterlab/rendermime",
       "@jupyterlab/rendermime-interfaces",
-      "@jupyterlab/services",
       "@jupyterlab/terminal",
       "@jupyterlab/tooltip",
       "@lumino/algorithm",

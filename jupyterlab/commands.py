@@ -1713,6 +1713,7 @@ class _AppHandler(object):
             latest_deps = store[0][1].get('dependencies', {})
             core_deps = core_data['resolutions']
             singletons = core_data['jupyterlab']['singletonPackages']
+            print(singletons)
 
             for (key, value) in latest_deps.items():
                 if key in singletons:
