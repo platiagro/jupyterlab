@@ -87,7 +87,7 @@
   "resolutions": {
     "@jupyterlab/application": "~2.1.2",
     "@jupyterlab/application-extension": "~2.1.2",
-    "@jupyterlab/apputils": "~2.1.1",
+    "@jupyterlab/apputils": "https://github.com/platiagro/jupyterlab/releases/download/v0.2.0platiagro-v2.1.2/jupyterlab-apputils-2.1.1.tgz",
     "@jupyterlab/apputils-extension": "~2.1.2",
     "@jupyterlab/attachments": "~2.1.1",
     "@jupyterlab/cells": "~2.1.2",
@@ -148,7 +148,7 @@
     "@jupyterlab/rendermime-interfaces": "~2.1.0",
     "@jupyterlab/running": "~2.1.1",
     "@jupyterlab/running-extension": "~2.1.2",
-    "@jupyterlab/services": "~5.1.0",
+    "@jupyterlab/services": "https://github.com/platiagro/jupyterlab/releases/download/v0.2.0platiagro-v2.1.2/jupyterlab-services-5.1.0.tgz",
     "@jupyterlab/settingeditor": "~2.1.1",
     "@jupyterlab/settingeditor-extension": "~2.1.2",
     "@jupyterlab/settingregistry": "~2.1.0",
