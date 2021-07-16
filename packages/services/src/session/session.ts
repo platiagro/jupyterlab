@@ -283,7 +283,7 @@ export interface IManager extends IDisposable {
     createOptions: ISessionOptions,
     connectOptions?: Omit<
       ISessionConnection.IOptions,
-      'model' | 'connectToKernel' | 'serverSettings'
+      'model' | 'connectToKernel'
     >
   ): Promise<ISessionConnection>;
 

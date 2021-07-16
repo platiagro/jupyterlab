@@ -217,7 +217,8 @@ export interface ISessionContext extends IObservableDisposable {
    * @returns A promise that resolves with the new kernel connection.
    */
   changeKernel(
-    options?: Partial<Kernel.IModel>
+    options?: Partial<Kernel.IModel>,
+    serverSettings?: ServerConnection.ISettings
   ): Promise<Kernel.IKernelConnection | null>;
 }
 
@@ -643,7 +644,8 @@ export class SessionContext implements ISessionContext {
    * Change the current kernel associated with the session.
    */
   async changeKernel(
-    options: Partial<Kernel.IModel> = {}
+    options: Partial<Kernel.IModel> = {},
+    serverSettings?: ServerConnection.ISettings
   ): Promise<Kernel.IKernelConnection | null> {
     if (this.isDisposed) {
       throw new Error('Disposed');
@@ -652,7 +654,7 @@ export class SessionContext implements ISessionContext {
     // and start its kernel first to ensure consistent
     // ordering.
     await this._initStarted.promise;
-    return this._changeKernel(options);
+    return this._changeKernel(options, serverSettings);
   }
 
   /**
@@ -799,11 +801,13 @@ export class SessionContext implements ISessionContext {
    */
   private async _changeKernel(
     model: Partial<Kernel.IModel> = {},
-    isInit = false
+    serverSettings?: ServerConnection.ISettings
   ): Promise<Kernel.IKernelConnection | null> {
     if (model.name) {
       this._pendingKernelName = model.name;
     }
+
+    console.error('APPUTILS MODIFIED @@@');
 
     if (this._session) {
       await this._shutdownSession();
@@ -833,12 +837,15 @@ export class SessionContext implements ISessionContext {
     ));
     try {
       this._statusChanged.emit('starting');
-      const session = await this.sessionManager.startNew({
-        path: requestId,
-        type: this._type,
-        name: this._name,
-        kernel: model
-      });
+      const session = await this.sessionManager.startNew(
+        {
+          path: requestId,
+          type: this._type,
+          name: this._name,
+          kernel: model
+        },
+        { serverSettings }
+      );
       // Handle a preempt.
       if (this._pendingSessionRequest !== session.path) {
         await session.shutdown();

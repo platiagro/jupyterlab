@@ -155,10 +155,13 @@ export class SessionManager extends BaseManager implements Session.IManager {
     createOptions: Session.ISessionOptions,
     connectOptions: Omit<
       Session.ISessionConnection.IOptions,
-      'model' | 'connectToKernel' | 'serverSettings'
+      'model' | 'connectToKernel'
     > = {}
   ): Promise<Session.ISessionConnection> {
-    const model = await startSession(createOptions, this.serverSettings);
+    const model = await startSession(
+      createOptions,
+      connectOptions.serverSettings || this.serverSettings
+    );
     await this.refreshRunning();
     return this.connectTo({ ...connectOptions, model });
   }
