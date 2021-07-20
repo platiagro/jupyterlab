@@ -99,15 +99,12 @@ export class SessionManager extends BaseManager implements Session.IManager {
    * Connect to a running session.  See also [[connectToSession]].
    */
   connectTo(
-    options: Omit<
-      Session.ISessionConnection.IOptions,
-      'connectToKernel' | 'serverSettings'
-    >
+    options: Omit<Session.ISessionConnection.IOptions, 'connectToKernel'>
   ): Session.ISessionConnection {
     const sessionConnection = new SessionConnection({
       ...options,
       connectToKernel: this._connectToKernel,
-      serverSettings: this.serverSettings
+      serverSettings: options.serverSettings || this.serverSettings
     });
     this._onStarted(sessionConnection);
     if (!this._models.has(options.model.id)) {
