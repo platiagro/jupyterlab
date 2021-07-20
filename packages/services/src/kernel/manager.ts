@@ -105,7 +105,8 @@ export class KernelManager extends BaseManager implements Kernel.IManager {
    * settings passed in the options.
    */
   connectTo(
-    options: Omit<Kernel.IKernelConnection.IOptions, 'serverSettings'>
+    options: Omit<Kernel.IKernelConnection.IOptions, 'serverSettings'>,
+    serverSettings?: ServerConnection.ISettings
   ): Kernel.IKernelConnection {
     const { id } = options.model;
 
@@ -122,7 +123,7 @@ export class KernelManager extends BaseManager implements Kernel.IManager {
     const kernelConnection = new KernelConnection({
       handleComms,
       ...options,
-      serverSettings: this.serverSettings
+      serverSettings: serverSettings || this.serverSettings
     });
     this._onStarted(kernelConnection);
     if (!this._models.has(id)) {

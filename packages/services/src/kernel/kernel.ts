@@ -644,7 +644,10 @@ export interface IManager extends IBaseManager {
    *
    * @returns A promise that resolves with the new kernel instance.
    */
-  connectTo(options: IKernelConnection.IOptions): IKernelConnection;
+  connectTo(
+    options: IKernelConnection.IOptions,
+    serverSettings?: ServerConnection.ISettings
+  ): IKernelConnection;
 
   /**
    * Shut down a kernel by id.

@@ -101,12 +101,26 @@ export class SessionManager extends BaseManager implements Session.IManager {
   connectTo(
     options: Omit<Session.ISessionConnection.IOptions, 'connectToKernel'>
   ): Session.ISessionConnection {
+    const customConnectToKernel = (
+      kernelConnectionOptions: Omit<
+        Kernel.IKernelConnection.IOptions,
+        'serverSettings'
+      >
+    ) => {
+      return this._connectToKernel(
+        kernelConnectionOptions,
+        options.serverSettings
+      );
+    };
+
     const sessionConnection = new SessionConnection({
       ...options,
-      connectToKernel: this._connectToKernel,
+      connectToKernel: customConnectToKernel,
       serverSettings: options.serverSettings || this.serverSettings
     });
+
     this._onStarted(sessionConnection);
+
     if (!this._models.has(options.model.id)) {
       // We trust the user to connect to an existing session, but we verify
       // asynchronously.
@@ -336,9 +350,10 @@ export class SessionManager extends BaseManager implements Session.IManager {
 
   // We define these here so they bind `this` correctly
   private readonly _connectToKernel = (
-    options: Omit<Kernel.IKernelConnection.IOptions, 'serverSettings'>
+    options: Omit<Kernel.IKernelConnection.IOptions, 'serverSettings'>,
+    serverSettings?: ServerConnection.ISettings
   ) => {
-    return this._kernelManager.connectTo(options);
+    return this._kernelManager.connectTo(options, serverSettings);
   };
 
   private _kernelManager: Kernel.IManager;
