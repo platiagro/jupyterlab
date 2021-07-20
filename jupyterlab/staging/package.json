@@ -17,7 +17,7 @@
   "resolutions": {
     "@jupyterlab/application": "~3.0.11",
     "@jupyterlab/application-extension": "~3.0.11",
-    "@jupyterlab/apputils": "file:../../packages/apputils/jupyterlab-apputils-v3.0.9.tgz",
+    "@jupyterlab/apputils": "https://github.com/platiagro/jupyterlab/raw/536d221138ef720b042579908826e44b5d7018ed/packages/apputils/jupyterlab-apputils-v3.0.9.tgz",
     "@jupyterlab/apputils-extension": "~3.0.11",
     "@jupyterlab/attachments": "~3.0.10",
     "@jupyterlab/cells": "~3.0.11",
@@ -80,7 +80,7 @@
     "@jupyterlab/rendermime-interfaces": "~3.0.9",
     "@jupyterlab/running": "~3.0.9",
     "@jupyterlab/running-extension": "~3.0.11",
-    "@jupyterlab/services": "file:../../packages/services/jupyterlab-services-v6.0.9.tgz",
+    "@jupyterlab/services": "https://github.com/platiagro/jupyterlab/raw/536d221138ef720b042579908826e44b5d7018ed/packages/services/jupyterlab-services-v6.0.9.tgz",
     "@jupyterlab/settingeditor": "~3.0.10",
     "@jupyterlab/settingeditor-extension": "~3.0.11",
     "@jupyterlab/settingregistry": "~3.0.6",
