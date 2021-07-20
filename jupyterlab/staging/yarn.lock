@@ -130,9 +130,9 @@
     "@lumino/widgets" "^1.16.1"
     es6-promise "~4.2.8"
 
-"@jupyterlab/apputils@^3.0.9", "@jupyterlab/apputils@file:../../packages/apputils/jupyterlab-apputils-v3.0.9.tgz":
+"@jupyterlab/apputils@^3.0.9", "@jupyterlab/apputils@https://github.com/platiagro/jupyterlab/raw/c85848d6f9b4fb66bb36bac9ce948dfe7b82be8c/packages/apputils/jupyterlab-apputils-v3.0.9.tgz":
   version "3.0.9"
-  resolved "file:../../packages/apputils/jupyterlab-apputils-v3.0.9.tgz#d150e21adb5692b7c8329e21c9d14edb0c42ac7f"
+  resolved "https://github.com/platiagro/jupyterlab/raw/c85848d6f9b4fb66bb36bac9ce948dfe7b82be8c/packages/apputils/jupyterlab-apputils-v3.0.9.tgz#afc4cff708b1e90d0ef6fe3085e9474488b7726d"
   dependencies:
     "@jupyterlab/coreutils" "^5.0.6"
     "@jupyterlab/services" "^6.0.9"
@@ -1297,9 +1297,9 @@
     "@lumino/signaling" "^1.4.3"
     react "^17.0.1"
 
-"@jupyterlab/services@^6.0.9", "@jupyterlab/services@file:../../packages/services/jupyterlab-services-v6.0.9.tgz":
+"@jupyterlab/services@^6.0.9", "@jupyterlab/services@https://github.com/platiagro/jupyterlab/raw/c85848d6f9b4fb66bb36bac9ce948dfe7b82be8c/packages/services/jupyterlab-services-v6.0.9.tgz":
   version "6.0.9"
-  resolved "file:../../packages/services/jupyterlab-services-v6.0.9.tgz#5f3d87fd24fc2b2cdbbe0bbb5ffc987514f32250"
+  resolved "https://github.com/platiagro/jupyterlab/raw/c85848d6f9b4fb66bb36bac9ce948dfe7b82be8c/packages/services/jupyterlab-services-v6.0.9.tgz#99a1db6c3683fbf1aee07505f7731b58ff6e0205"
   dependencies:
     "@jupyterlab/coreutils" "^5.0.6"
     "@jupyterlab/nbformat" "^3.0.6"
