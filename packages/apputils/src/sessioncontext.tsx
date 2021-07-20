@@ -807,8 +807,6 @@ export class SessionContext implements ISessionContext {
       this._pendingKernelName = model.name;
     }
 
-    console.error('APPUTILS MODIFIED @@@');
-
     if (this._session) {
       await this._shutdownSession();
     } else {

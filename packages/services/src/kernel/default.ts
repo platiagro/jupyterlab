@@ -1213,8 +1213,6 @@ export class KernelConnection implements Kernel.IKernelConnection {
     // Update the connection status to reflect opening a new connection.
     this._updateConnectionStatus('connecting');
 
-    console.error('É PARA ESTAR CERTO AGORA:', this.serverSettings);
-
     const settings = this.serverSettings;
     const partialUrl = URLExt.join(
       settings.wsUrl,
